@@ -8,32 +8,32 @@ local kp =
   };
 
 local manifests_setup =
-  { 'setup/0namespace-namespace': kp.kubePrometheus.namespace } +
-  { ['setup/prometheus-operator-' + name]: kp.prometheusOperator[name] for name in std.filter((function(name) name != 'serviceMonitor' && name != 'prometheusRule'), std.objectFields(kp.prometheusOperator)) };
+  { '0namespace-namespace': kp.kubePrometheus.namespace } +
+  { ['prometheus-operator-' + name]: kp.prometheusOperator[name] for name in std.filter((function(name) name != 'serviceMonitor' && name != 'prometheusRule'), std.objectFields(kp.prometheusOperator)) };
 
 local manifests_node_exporter =
-  { ['node-exporter/' + name]: kp.nodeExporter[name] for name in std.objectFields(kp.nodeExporter) };
+  { [name]: kp.nodeExporter[name] for name in std.objectFields(kp.nodeExporter) };
 
 local manifests_blackbox_exporter =
-  { ['blackbox-exporter/' + name]: kp.blackboxExporter[name] for name in std.objectFields(kp.blackboxExporter) };
+  { [name]: kp.blackboxExporter[name] for name in std.objectFields(kp.blackboxExporter) };
 
 local manifests_kube_state_metrics =
-  { ['kube-state-metrics/' + name]: kp.kubeStateMetrics[name] for name in std.objectFields(kp.kubeStateMetrics) };
+  { [name]: kp.kubeStateMetrics[name] for name in std.objectFields(kp.kubeStateMetrics) };
 
 local manifests_alertmanager =
-  { ['alertmanager/' + name]: kp.alertmanager[name] for name in std.objectFields(kp.alertmanager) };
+  { [name]: kp.alertmanager[name] for name in std.objectFields(kp.alertmanager) };
 
 local manifests_prometheus =
-  { ['prometheus/' + name]: kp.prometheus[name] for name in std.objectFields(kp.prometheus) };
+  { [name]: kp.prometheus[name] for name in std.objectFields(kp.prometheus) };
 
 local manifests_prometheus_adapter =
-  { ['prometheus-adapter/' + name]: kp.prometheusAdapter[name] for name in std.objectFields(kp.prometheusAdapter) };
+  { [name]: kp.prometheusAdapter[name] for name in std.objectFields(kp.prometheusAdapter) };
 
 local manifests_grafana =
-  { ['grafana/' + name]: kp.grafana[name] for name in std.objectFields(kp.grafana) };
+  { [name]: kp.grafana[name] for name in std.objectFields(kp.grafana) };
 
 local manifests_kubernetes = 
-  { ['kubernetes/' + name]: kp.kubernetesMixin[name] for name in std.objectFields(kp.kubernetesMixin) };
+  { [name]: kp.kubernetesMixin[name] for name in std.objectFields(kp.kubernetesMixin) };
 
 local manifests =
   // Uncomment line below to enable vertical auto scaling of kube-state-metrics
@@ -54,6 +54,7 @@ local manifests =
   { ['kubernetes/' + name]: kp.kubernetesMixin[name] for name in std.objectFields(kp.kubernetesMixin) };
 
 local kustomizationResourceFile(name) = './manifests/' + name + '.yaml';
+local kustomizationResourceFileFolder(name) = '' + name + '.yaml';
 local kustomization = {
   apiVersion: 'kustomize.config.k8s.io/v1beta1',
   kind: 'Kustomization',
@@ -63,55 +64,55 @@ local kustomization = {
 local kustomization_setup = {
   apiVersion: 'kustomize.config.k8s.io/v1beta1',
   kind: 'Kustomization',
-  resources: std.map(kustomizationResourceFile, std.objectFields(manifests_setup)),
+  resources: std.map(kustomizationResourceFileFolder, std.objectFields(manifests_setup)),
 };
 
 local kustomization_node_exporter = {
   apiVersion: 'kustomize.config.k8s.io/v1beta1',
   kind: 'Kustomization',
-  resources: std.map(kustomizationResourceFile, std.objectFields(manifests_node_exporter)),
+  resources: std.map(kustomizationResourceFileFolder, std.objectFields(manifests_node_exporter)),
 };
 
 local kustomization_blackbox_exporter = {
   apiVersion: 'kustomize.config.k8s.io/v1beta1',
   kind: 'Kustomization',
-  resources: std.map(kustomizationResourceFile, std.objectFields(manifests_blackbox_exporter)),
+  resources: std.map(kustomizationResourceFileFolder, std.objectFields(manifests_blackbox_exporter)),
 };
 
 local kustomization_kube_state_metrics = {
   apiVersion: 'kustomize.config.k8s.io/v1beta1',
   kind: 'Kustomization',
-  resources: std.map(kustomizationResourceFile, std.objectFields(manifests_kube_state_metrics)),
+  resources: std.map(kustomizationResourceFileFolder, std.objectFields(manifests_kube_state_metrics)),
 };
 
 local kustomization_alertmanager = {
   apiVersion: 'kustomize.config.k8s.io/v1beta1',
   kind: 'Kustomization',
-  resources: std.map(kustomizationResourceFile, std.objectFields(manifests_alertmanager)),
+  resources: std.map(kustomizationResourceFileFolder, std.objectFields(manifests_alertmanager)),
 };
 
 local kustomization_prometheus = {
   apiVersion: 'kustomize.config.k8s.io/v1beta1',
   kind: 'Kustomization',
-  resources: std.map(kustomizationResourceFile, std.objectFields(manifests_prometheus)),
+  resources: std.map(kustomizationResourceFileFolder, std.objectFields(manifests_prometheus)),
 };
 
 local kustomization_prometheus_adapter = {
   apiVersion: 'kustomize.config.k8s.io/v1beta1',
   kind: 'Kustomization',
-  resources: std.map(kustomizationResourceFile, std.objectFields(manifests_prometheus_adapter)),
+  resources: std.map(kustomizationResourceFileFolder, std.objectFields(manifests_prometheus_adapter)),
 };
 
 local kustomization_grafana = {
   apiVersion: 'kustomize.config.k8s.io/v1beta1',
   kind: 'Kustomization',
-  resources: std.map(kustomizationResourceFile, std.objectFields(manifests_grafana)),
+  resources: std.map(kustomizationResourceFileFolder, std.objectFields(manifests_grafana)),
 };
 
 local kustomization_kubernetes = {
   apiVersion: 'kustomize.config.k8s.io/v1beta1',
   kind: 'Kustomization',
-  resources: std.map(kustomizationResourceFile, std.objectFields(manifests_kubernetes)),
+  resources: std.map(kustomizationResourceFileFolder, std.objectFields(manifests_kubernetes)),
 };
 
 manifests {
