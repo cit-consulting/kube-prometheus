@@ -16,7 +16,9 @@ spec:
     rules:
     - alert: NodeFilesystemSpaceFillingUp
       annotations:
-        description: Filesystem on {{ $labels.device }} at {{ $labels.instance }} has only {{ printf "%.2f" $value }}% available space left and is filling up.
+        description: Filesystem on {{ $labels.device }} at {{ $labels.instance }}
+          has only {{ printf "%.2f" $value }}% available space left and is filling
+          up.
         summary: Filesystem is predicted to run out of space within the next 24 hours.
       expr: |
         (
@@ -31,7 +33,9 @@ spec:
         severity: warning
     - alert: NodeFilesystemSpaceFillingUp
       annotations:
-        description: Filesystem on {{ $labels.device }} at {{ $labels.instance }} has only {{ printf "%.2f" $value }}% available space left and is filling up fast.
+        description: Filesystem on {{ $labels.device }} at {{ $labels.instance }}
+          has only {{ printf "%.2f" $value }}% available space left and is filling
+          up fast.
         summary: Filesystem is predicted to run out of space within the next 4 hours.
       expr: |
         (
@@ -46,7 +50,8 @@ spec:
         severity: critical
     - alert: NodeFilesystemAlmostOutOfSpace
       annotations:
-        description: Filesystem on {{ $labels.device }} at {{ $labels.instance }} has only {{ printf "%.2f" $value }}% available space left.
+        description: Filesystem on {{ $labels.device }} at {{ $labels.instance }}
+          has only {{ printf "%.2f" $value }}% available space left.
         summary: Filesystem has less than 5% space left.
       expr: |
         (
@@ -59,7 +64,8 @@ spec:
         severity: warning
     - alert: NodeFilesystemAlmostOutOfSpace
       annotations:
-        description: Filesystem on {{ $labels.device }} at {{ $labels.instance }} has only {{ printf "%.2f" $value }}% available space left.
+        description: Filesystem on {{ $labels.device }} at {{ $labels.instance }}
+          has only {{ printf "%.2f" $value }}% available space left.
         summary: Filesystem has less than 3% space left.
       expr: |
         (
@@ -72,7 +78,9 @@ spec:
         severity: critical
     - alert: NodeFilesystemFilesFillingUp
       annotations:
-        description: Filesystem on {{ $labels.device }} at {{ $labels.instance }} has only {{ printf "%.2f" $value }}% available inodes left and is filling up.
+        description: Filesystem on {{ $labels.device }} at {{ $labels.instance }}
+          has only {{ printf "%.2f" $value }}% available inodes left and is filling
+          up.
         summary: Filesystem is predicted to run out of inodes within the next 24 hours.
       expr: |
         (
@@ -87,7 +95,9 @@ spec:
         severity: warning
     - alert: NodeFilesystemFilesFillingUp
       annotations:
-        description: Filesystem on {{ $labels.device }} at {{ $labels.instance }} has only {{ printf "%.2f" $value }}% available inodes left and is filling up fast.
+        description: Filesystem on {{ $labels.device }} at {{ $labels.instance }}
+          has only {{ printf "%.2f" $value }}% available inodes left and is filling
+          up fast.
         summary: Filesystem is predicted to run out of inodes within the next 4 hours.
       expr: |
         (
@@ -102,7 +112,8 @@ spec:
         severity: critical
     - alert: NodeFilesystemAlmostOutOfFiles
       annotations:
-        description: Filesystem on {{ $labels.device }} at {{ $labels.instance }} has only {{ printf "%.2f" $value }}% available inodes left.
+        description: Filesystem on {{ $labels.device }} at {{ $labels.instance }}
+          has only {{ printf "%.2f" $value }}% available inodes left.
         summary: Filesystem has less than 5% inodes left.
       expr: |
         (
@@ -115,7 +126,8 @@ spec:
         severity: warning
     - alert: NodeFilesystemAlmostOutOfFiles
       annotations:
-        description: Filesystem on {{ $labels.device }} at {{ $labels.instance }} has only {{ printf "%.2f" $value }}% available inodes left.
+        description: Filesystem on {{ $labels.device }} at {{ $labels.instance }}
+          has only {{ printf "%.2f" $value }}% available inodes left.
         summary: Filesystem has less than 3% inodes left.
       expr: |
         (
@@ -128,7 +140,8 @@ spec:
         severity: critical
     - alert: NodeNetworkReceiveErrs
       annotations:
-        description: '{{ $labels.instance }} interface {{ $labels.device }} has encountered {{ printf "%.0f" $value }} receive errors in the last two minutes.'
+        description: '{{ $labels.instance }} interface {{ $labels.device }} has encountered
+          {{ printf "%.0f" $value }} receive errors in the last two minutes.'
         summary: Network interface is reporting many receive errors.
       expr: |
         rate(node_network_receive_errs_total[2m]) / rate(node_network_receive_packets_total[2m]) > 0.01
@@ -137,7 +150,8 @@ spec:
         severity: warning
     - alert: NodeNetworkTransmitErrs
       annotations:
-        description: '{{ $labels.instance }} interface {{ $labels.device }} has encountered {{ printf "%.0f" $value }} transmit errors in the last two minutes.'
+        description: '{{ $labels.instance }} interface {{ $labels.device }} has encountered
+          {{ printf "%.0f" $value }} transmit errors in the last two minutes.'
         summary: Network interface is reporting many transmit errors.
       expr: |
         rate(node_network_transmit_errs_total[2m]) / rate(node_network_transmit_packets_total[2m]) > 0.01
@@ -162,7 +176,8 @@ spec:
         severity: warning
     - alert: NodeClockSkewDetected
       annotations:
-        message: Clock on {{ $labels.instance }} is out of sync by more than 300s. Ensure NTP is configured correctly on this host.
+        description: Clock on {{ $labels.instance }} is out of sync by more than 300s.
+          Ensure NTP is configured correctly on this host.
         summary: Clock skew detected.
       expr: |
         (
@@ -181,7 +196,8 @@ spec:
         severity: warning
     - alert: NodeClockNotSynchronising
       annotations:
-        message: Clock on {{ $labels.instance }} is not synchronising. Ensure NTP is configured on this host.
+        description: Clock on {{ $labels.instance }} is not synchronising. Ensure
+          NTP is configured on this host.
         summary: Clock not synchronising.
       expr: |
         min_over_time(node_timex_sync_status[5m]) == 0
@@ -192,7 +208,9 @@ spec:
         severity: warning
     - alert: NodeRAIDDegraded
       annotations:
-        description: RAID array '{{ $labels.device }}' on {{ $labels.instance }} is in degraded state due to one or more disks failures. Number of spare drives is insufficient to fix issue automatically.
+        description: RAID array '{{ $labels.device }}' on {{ $labels.instance }} is
+          in degraded state due to one or more disks failures. Number of spare drives
+          is insufficient to fix issue automatically.
         summary: RAID Array is degraded
       expr: |
         node_md_disks_required - ignoring (state) (node_md_disks{state="active"}) > 0
@@ -201,10 +219,11 @@ spec:
         severity: critical
     - alert: NodeRAIDDiskFailure
       annotations:
-        description: At least one device in RAID array on {{ $labels.instance }} failed. Array '{{ $labels.device }}' needs attention and possibly a disk swap.
+        description: At least one device in RAID array on {{ $labels.instance }} failed.
+          Array '{{ $labels.device }}' needs attention and possibly a disk swap.
         summary: Failed device in RAID array
       expr: |
-        node_md_disks{state="fail"} > 0
+        node_md_disks{state="failed"} > 0
       labels:
         severity: warning
   - name: node-exporter.rules
