@@ -1,11 +1,13 @@
-local kp = (import 'kube-prometheus/main.libsonnet') +
-           (import 'kube-prometheus/platforms/eks.libsonnet') + {
+local kp = (import 'kube-prometheus/main.libsonnet') + {
   values+:: {
     common+: {
       namespace: 'monitoring',
     },
+    kubePrometheus+: {
+      platform: 'eks',
+    },
   },
-  prometheus+: {
+  kubernetesControlPlane+: {
     prometheusRuleEksCNI+: {
       spec+: {
         groups+: [

@@ -3,8 +3,7 @@ local defaults = {
   name: 'grafana',
   namespace: error 'must provide namespace',
   version: error 'must provide version',
-  // image: error 'must provide image',
-  imageRepos: 'grafana/grafana',
+  image: error 'must provide image',
   resources: {
     requests: { cpu: '100m', memory: '100Mi' },
     limits: { cpu: '200m', memory: '200Mi' },
@@ -28,38 +27,42 @@ local defaults = {
   containers: [],
   datasources: [],
   config: {},
+  plugins: [],
+  env: [],
 };
 
 function(params) {
   local g = self,
-  cfg:: defaults + params,
+  _config:: defaults + params,
   // Safety check
-  assert std.isObject(g.cfg.resources),
+  assert std.isObject(g._config.resources),
 
   local glib = (import 'github.com/brancz/kubernetes-grafana/grafana/grafana.libsonnet') + {
     _config+:: {
-      namespace: g.cfg.namespace,
+      namespace: g._config.namespace,
       versions+:: {
-        grafana: g.cfg.version,
+        grafana: g._config.version,
       },
       imageRepos+:: {
-        grafana: g.cfg.imageRepos,
+        grafana: std.split(g._config.image, ':')[0],
       },
       prometheus+:: {
-        name: g.cfg.prometheusName,
+        name: g._config.prometheusName,
       },
       grafana+:: {
-        labels: g.cfg.commonLabels,
-        dashboards: g.cfg.dashboards,
-        resources: g.cfg.resources,
-        rawDashboards: g.cfg.rawDashboards,
-        folderDashboards: g.cfg.folderDashboards,
-        containers: g.cfg.containers,
-        config+: g.cfg.config,
+        labels: g._config.commonLabels,
+        dashboards: g._config.dashboards,
+        resources: g._config.resources,
+        rawDashboards: g._config.rawDashboards,
+        folderDashboards: g._config.folderDashboards,
+        containers: g._config.containers,
+        config+: g._config.config,
+        plugins+: g._config.plugins,
+        env: g._config.env,
       } + (
         // Conditionally overwrite default setting.
-        if std.length(g.cfg.datasources) > 0 then
-          { datasources: g.cfg.datasources }
+        if std.length(g._config.datasources) > 0 then
+          { datasources: g._config.datasources }
         else {}
       ),
     },
@@ -73,7 +76,9 @@ function(params) {
   dashboardDatasources: glib.grafana.dashboardDatasources,
   dashboardSources: glib.grafana.dashboardSources,
 
-  dashboardDefinitions: if std.length(g.cfg.dashboards) > 0 then {
+  dashboardDefinitions: if std.length(g._config.dashboards) > 0 ||
+                           std.length(g._config.rawDashboards) > 0 ||
+                           std.length(g._config.folderDashboards) > 0 then {
     apiVersion: 'v1',
     kind: 'ConfigMapList',
     items: glib.grafana.dashboardDefinitions,
@@ -83,8 +88,8 @@ function(params) {
     kind: 'ServiceMonitor',
     metadata: {
       name: 'grafana',
-      namespace: g.cfg.namespace,
-      labels: g.cfg.commonLabels,
+      namespace: g._config.namespace,
+      labels: g._config.commonLabels,
     },
     spec: {
       selector: {
