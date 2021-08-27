@@ -11,21 +11,21 @@ set -o pipefail
 PATH="$(pwd)/tmp/bin:${PATH}"
 
 # Make sure to start with a clean 'manifests' dir
-rm -rf manifests
-mkdir -p manifests/setup
-mkdir -p manifests/node-exporter
-mkdir -p manifests/blackbox-exporter
-mkdir -p manifests/kube-state-metrics
-mkdir -p manifests/alertmanager
-mkdir -p manifests/prometheus
-mkdir -p manifests/prometheus-adapter
-mkdir -p manifests/grafana
-mkdir -p manifests/kubernetes
+rm -rf manifests-citc
+mkdir -p manifests-citc/setup
+mkdir -p manifests-citc/node-exporter
+mkdir -p manifests-citc/blackbox-exporter
+mkdir -p manifests-citc/kube-state-metrics
+mkdir -p manifests-citc/alertmanager
+mkdir -p manifests-citc/prometheus
+mkdir -p manifests-citc/prometheus-adapter
+mkdir -p manifests-citc/grafana
+mkdir -p manifests-citc/kubernetes
 
 # Calling gojsontoyaml is optional, but we would like to generate yaml, not json
-jsonnet -J vendor -m manifests "${1-example.jsonnet}" | xargs -I{} sh -c 'cat {} | gojsontoyaml > {}.yaml' -- {}
+jsonnet -J vendor -m manifests-citc "${1-example.jsonnet}" | xargs -I{} sh -c 'cat {} | gojsontoyaml > {}.yaml' -- {}
 
 # Make sure to remove json files
-find manifests -type f ! -name '*.yaml' -delete
+find manifests-citc -type f ! -name '*.yaml' -delete
 rm -f kustomization
 
