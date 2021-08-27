@@ -11,29 +11,29 @@ local manifests_setup =
   { '0namespace-namespace': kp.kubePrometheus.namespace } +
   { ['prometheus-operator-' + name]: kp.prometheusOperator[name] for name in std.filter((function(name) name != 'serviceMonitor' && name != 'prometheusRule'), std.objectFields(kp.prometheusOperator)) };
 
-local manifests_node_exporter =
-  { [name]: kp.nodeExporter[name] for name in std.objectFields(kp.nodeExporter) };
-
-local manifests_blackbox_exporter =
-  { [name]: kp.blackboxExporter[name] for name in std.objectFields(kp.blackboxExporter) };
-
-local manifests_kube_state_metrics =
-  { [name]: kp.kubeStateMetrics[name] for name in std.objectFields(kp.kubeStateMetrics) };
-
 local manifests_alertmanager =
   { [name]: kp.alertmanager[name] for name in std.objectFields(kp.alertmanager) };
 
-local manifests_prometheus =
-  { [name]: kp.prometheus[name] for name in std.objectFields(kp.prometheus) };
-
-local manifests_prometheus_adapter =
-  { [name]: kp.prometheusAdapter[name] for name in std.objectFields(kp.prometheusAdapter) };
+local manifests_blackbox_exporter =
+  { [name]: kp.blackboxExporter[name] for name in std.objectFields(kp.blackboxExporter) };
 
 local manifests_grafana =
   { [name]: kp.grafana[name] for name in std.objectFields(kp.grafana) };
 
 local manifests_kubernetes = 
-  { [name]: kp.kubernetesMixin[name] for name in std.objectFields(kp.kubernetesMixin) };
+  { [name]: kp.kubernetesControlPlane[name] for name in std.objectFields(kp.kubernetesControlPlane) };
+
+local manifests_kube_state_metrics =
+  { [name]: kp.kubeStateMetrics[name] for name in std.objectFields(kp.kubeStateMetrics) };
+
+local manifests_node_exporter =
+  { [name]: kp.nodeExporter[name] for name in std.objectFields(kp.nodeExporter) };
+
+local manifests_prometheus_adapter =
+  { [name]: kp.prometheusAdapter[name] for name in std.objectFields(kp.prometheusAdapter) };
+
+local manifests_prometheus =
+  { [name]: kp.prometheus[name] for name in std.objectFields(kp.prometheus) };
 
 local manifests =
   // Uncomment line below to enable vertical auto scaling of kube-state-metrics
@@ -51,15 +51,15 @@ local manifests =
   { ['prometheus/' + name]: kp.prometheus[name] for name in std.objectFields(kp.prometheus) } +
   { ['prometheus-adapter/' + name]: kp.prometheusAdapter[name] for name in std.objectFields(kp.prometheusAdapter) } +
   { ['grafana/' + name]: kp.grafana[name] for name in std.objectFields(kp.grafana) } +
-  { ['kubernetes/' + name]: kp.kubernetesMixin[name] for name in std.objectFields(kp.kubernetesMixin) };
+  { ['kubernetes/' + name]: kp.kubernetesControlPlane[name] for name in std.objectFields(kp.kubernetesControlPlane) };
 
-local kustomizationResourceFile(name) = './manifests/' + name + '.yaml';
+local kustomizationResourceFile(name) = './manifests-citc/' + name + '.yaml';
 local kustomizationResourceFileFolder(name) = '' + name + '.yaml';
-local kustomization = {
-  apiVersion: 'kustomize.config.k8s.io/v1beta1',
-  kind: 'Kustomization',
-  resources: std.map(kustomizationResourceFile, std.objectFields(manifests)),
-};
+// local kustomization = {
+//   apiVersion: 'kustomize.config.k8s.io/v1beta1',
+//   kind: 'Kustomization',
+//   resources: std.map(kustomizationResourceFile, std.objectFields(manifests)),
+// };
 
 local kustomization_setup = {
   apiVersion: 'kustomize.config.k8s.io/v1beta1',
@@ -116,7 +116,7 @@ local kustomization_kubernetes = {
 };
 
 manifests {
-  '../kustomization': kustomization,
+  // '../kustomization': kustomization,
   'setup/kustomization': kustomization_setup,
   'node-exporter/kustomization': kustomization_node_exporter,
   'blackbox-exporter/kustomization': kustomization_blackbox_exporter,
