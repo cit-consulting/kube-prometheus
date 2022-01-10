@@ -39,7 +39,7 @@ local utils = import './lib/utils.libsonnet';
       images: {
         alertmanager: 'quay.io/prometheus/alertmanager:v' + $.values.common.versions.alertmanager,
         blackboxExporter: 'quay.io/prometheus/blackbox-exporter:v' + $.values.common.versions.blackboxExporter,
-        grafana: 'grafana/grafana:v' + $.values.common.versions.grafana,
+        grafana: 'grafana/grafana:' + $.values.common.versions.grafana,
         kubeStateMetrics: 'k8s.gcr.io/kube-state-metrics/kube-state-metrics:v' + $.values.common.versions.kubeStateMetrics,
         nodeExporter: 'quay.io/prometheus/node-exporter:v' + $.values.common.versions.nodeExporter,
         prometheus: 'quay.io/prometheus/prometheus:v' + $.values.common.versions.prometheus,
@@ -91,14 +91,21 @@ local utils = import './lib/utils.libsonnet';
       version: $.values.common.versions.prometheus,
       image: $.values.common.images.prometheus,
       name: 'k8s',
-      alertmanagerName: $.values.alertmanager.name,
+      alerting: {
+        alertmanagers: [{
+          namespace: $.values.common.namespace,
+          name: 'alertmanager-' + $.values.alertmanager.name,
+          port: $.alertmanager.service.spec.ports[0].name,
+          apiVersion: 'v2',
+        }],
+      },
       mixin+: { ruleLabels: $.values.common.ruleLabels },
     },
     prometheusAdapter: {
       namespace: $.values.common.namespace,
       version: $.values.common.versions.prometheusAdapter,
       image: $.values.common.images.prometheusAdapter,
-      prometheusURL: 'http://prometheus-' + $.values.prometheus.name + '.' + $.values.common.namespace + '.svc.cluster.local:9090/',
+      prometheusURL: 'http://prometheus-' + $.values.prometheus.name + '.' + $.values.prometheus.namespace + '.svc:9090/',
       rangeIntervals+: {
         kubelet: utils.rangeInterval($.kubernetesControlPlane.serviceMonitorKubelet.spec.endpoints[0].interval),
         nodeExporter: utils.rangeInterval($.nodeExporter.serviceMonitor.spec.endpoints[0].interval),

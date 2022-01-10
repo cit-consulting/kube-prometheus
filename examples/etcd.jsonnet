@@ -5,15 +5,14 @@ local kp = (import 'kube-prometheus/main.libsonnet') +
       namespace: 'monitoring',
     },
 
-    // Reference info: https://github.com/coreos/kube-prometheus/blob/master/README.md#static-etcd-configuration
     etcd+: {
       // Configure this to be the IP(s) to scrape - i.e. your etcd node(s) (use commas to separate multiple values).
       ips: ['127.0.0.1'],
 
       // Reference info:
-      //  * https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#servicemonitorspec (has endpoints)
-      //  * https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#endpoint (has tlsConfig)
-      //  * https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#tlsconfig (has: caFile, certFile, keyFile, serverName, & insecureSkipVerify)
+      //  * https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#servicemonitorspec (has endpoints)
+      //  * https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#endpoint (has tlsConfig)
+      //  * https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#tlsconfig (has: caFile, certFile, keyFile, serverName, & insecureSkipVerify)
 
       // Set these three variables to the fully qualified directory path on your work machine to the certificate files that are valid to scrape etcd metrics with (check the apiserver container).
       // Most likely these certificates are generated somewhere in an infrastructure repository, so using the jsonnet `importstr` function can
