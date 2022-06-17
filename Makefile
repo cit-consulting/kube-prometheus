@@ -9,12 +9,15 @@ JSONNET_BIN=$(BIN_DIR)/jsonnet
 JSONNETLINT_BIN=$(BIN_DIR)/jsonnet-lint
 JSONNETFMT_BIN=$(BIN_DIR)/jsonnetfmt
 KUBECONFORM_BIN=$(BIN_DIR)/kubeconform
-TOOLING=$(JB_BIN) $(GOJSONTOYAML_BIN) $(JSONNET_BIN) $(JSONNETLINT_BIN) $(JSONNETFMT_BIN) $(KUBECONFORM_BIN) $(MDOX_BIN)
+KUBESCAPE_BIN=$(BIN_DIR)/kubescape
+TOOLING=$(JB_BIN) $(GOJSONTOYAML_BIN) $(JSONNET_BIN) $(JSONNETLINT_BIN) $(JSONNETFMT_BIN) $(KUBECONFORM_BIN) $(MDOX_BIN) $(KUBESCAPE_BIN)
 
 JSONNETFMT_ARGS=-n 2 --max-blank-lines 2 --string-style s --comment-style s
 
 MDOX_VALIDATE_CONFIG?=.mdox.validate.yaml
 MD_FILES_TO_FORMAT=$(shell find docs developer-workspace examples experimental jsonnet manifests -name "*.md") $(shell ls *.md)
+
+KUBESCAPE_THRESHOLD=1
 
 all: generate fmt test docs
 
@@ -51,17 +54,21 @@ update: $(JB_BIN)
 	$(JB_BIN) update
 
 .PHONY: validate
-validate: validate-1.21 validate-1.22
-
-validate-1.21:
-	KUBE_VERSION=1.21.1 $(MAKE) kubeconform
+validate: validate-1.22 validate-1.23
 
 validate-1.22:
-	KUBE_VERSION=1.22.0 $(MAKE) kubeconform
+	KUBE_VERSION=1.22.4 $(MAKE) kubeconform
+
+validate-1.23:
+	KUBE_VERSION=1.23.0 $(MAKE) kubeconform
 
 .PHONY: kubeconform
 kubeconform: crdschemas manifests $(KUBECONFORM_BIN)
 	$(KUBECONFORM_BIN) -kubernetes-version $(KUBE_VERSION) -schema-location 'default' -schema-location 'crdschemas/{{ .ResourceKind }}.json' -skip CustomResourceDefinition manifests/
+
+.PHONY: kubescape
+kubescape: $(KUBESCAPE_BIN) ## Runs a security analysis on generated manifests - failing if risk score is above threshold percentage 't'
+	$(KUBESCAPE_BIN) scan -s framework -t $(KUBESCAPE_THRESHOLD) nsa manifests/*.yaml --exceptions 'kubescape-exceptions.json'
 
 .PHONY: fmt
 fmt: $(JSONNETFMT_BIN)
