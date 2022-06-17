@@ -9,6 +9,7 @@ resources:
 - clusterRoleServerResources.yaml
 - configMap.yaml
 - deployment.yaml
+- networkPolicy.yaml
 - podDisruptionBudget.yaml
 - roleBindingAuthReader.yaml
 - service.yaml

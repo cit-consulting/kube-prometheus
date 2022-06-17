@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
 - clusterRole.yaml
 - clusterRoleBinding.yaml
+- networkPolicy.yaml
 - podDisruptionBudget.yaml
 - prometheus.yaml
 - prometheusRule.yaml

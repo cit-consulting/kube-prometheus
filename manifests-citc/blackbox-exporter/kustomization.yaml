@@ -5,6 +5,7 @@ resources:
 - clusterRoleBinding.yaml
 - configuration.yaml
 - deployment.yaml
+- networkPolicy.yaml
 - service.yaml
 - serviceAccount.yaml
 - serviceMonitor.yaml

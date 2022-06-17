@@ -6,6 +6,8 @@ resources:
 - dashboardDefinitions.yaml
 - dashboardSources.yaml
 - deployment.yaml
+- networkPolicy.yaml
+- prometheusRule.yaml
 - service.yaml
 - serviceAccount.yaml
 - serviceMonitor.yaml

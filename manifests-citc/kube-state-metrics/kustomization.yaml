@@ -4,6 +4,7 @@ resources:
 - clusterRole.yaml
 - clusterRoleBinding.yaml
 - deployment.yaml
+- networkPolicy.yaml
 - prometheusRule.yaml
 - service.yaml
 - serviceAccount.yaml
