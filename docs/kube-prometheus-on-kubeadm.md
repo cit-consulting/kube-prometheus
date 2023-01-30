@@ -1,15 +1,14 @@
 ---
-weight: 500
+weight: 302
 toc: true
 title: Deploy to kubeadm
 menu:
     docs:
         parent: kube
-lead: Deploy kube-prometheus to Kubernets kubeadm.
+lead: This guide will help you deploying kube-prometheus on Kubernetes kubeadm.
 images: []
 draft: false
-description: Deploy kube-prometheus to Kubernets kubeadm.
-date: "2021-03-08T23:04:32+01:00"
+description: This guide will help you deploying kube-prometheus on Kubernetes kubeadm.
 ---
 
 The [kubeadm](https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/) tool is linked by Kubernetes as the offical way to deploy and manage self-hosted clusters. kubeadm does a lot of heavy lifting by automatically configuring your Kubernetes cluster with some common options. This guide is intended to show you how to deploy Prometheus, Prometheus Operator and Kube Prometheus to get you started monitoring your cluster that was deployed with kubeadm.
@@ -44,7 +43,7 @@ kubernetesVersion: "v1.23.1"
 networking:
   dnsDomain: "cluster.local"
   serviceSubnet: "10.96.0.0/12"
-imageRepository: "k8s.gcr.io"
+imageRepository: "registry.k8s.io"
 ```
 
 Notice the `.scheduler.extraArgs` and `.controllerManager.extraArgs`. This exposes the `kube-controller-manager` and `kube-scheduler` services to the rest of the cluster. If you have kubernetes core components as pods in the kube-system namespace, ensure that the `kube-prometheus-exporter-kube-scheduler` and `kube-prometheus-exporter-kube-controller-manager` services' `spec.selector` values match those of pods.
