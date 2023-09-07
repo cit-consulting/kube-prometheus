@@ -7,7 +7,9 @@ resources:
 - prometheus-operator-0podmonitorCustomResourceDefinition.yaml
 - prometheus-operator-0probeCustomResourceDefinition.yaml
 - prometheus-operator-0prometheusCustomResourceDefinition.yaml
+- prometheus-operator-0prometheusagentCustomResourceDefinition.yaml
 - prometheus-operator-0prometheusruleCustomResourceDefinition.yaml
+- prometheus-operator-0scrapeconfigCustomResourceDefinition.yaml
 - prometheus-operator-0servicemonitorCustomResourceDefinition.yaml
 - prometheus-operator-0thanosrulerCustomResourceDefinition.yaml
 - prometheus-operator-clusterRole.yaml
