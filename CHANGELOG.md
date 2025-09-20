@@ -1,3 +1,18 @@
+## release-0.16 / 2025-08-28
+
+* [ENHANCEMENT] Add common labels to blackbox-exporter ClusterRole. [#2667](https://github.com/prometheus-operator/kube-prometheus/pull/2667)
+* [ENHANCEMENT] Add labels to AWS VPC CNI Service and ServiceMonitor. [#2668](https://github.com/prometheus-operator/kube-prometheus/pull/2668)
+* [ENHANCEMENT] Add component label to Kubernetes control-plane resources. [#2669](https://github.com/prometheus-operator/kube-prometheus/pull/2669)
+* [CHANGE] AKS platform: change Service name and `job` label. [#2665](https://github.com/prometheus-operator/kube-prometheus/pull/2665)
+
+## release-0.15 / 2025-06-04
+
+* [FEATURE] Add config option for storage to Prometheus and Alertmanager servers[#2651](https://github.com/prometheus-operator/kube-prometheus/pull/2651)
+* [ENHANCEMENT] Reduce apiserver metric cardinality [#2531](https://github.com/prometheus-operator/kube-prometheus/pull/2531)
+* [BUGFIX] Fix port allocation for node-exporter [#2627](https://github.com/prometheus-operator/kube-prometheus/pull/2627)
+* [BUGFIX] Fix procfs location for node-exporter [#2549](https://github.com/prometheus-operator/kube-prometheus/pull/2549)
+* [BUGFIX] Drop `process_start_time_seconds` from Kubelet slis endpoint [#2530](https://github.com/prometheus-operator/kube-prometheus/pull/2530)
+
 ## release-0.14 / 2024-09-12
 
 * [CHANGE] Prefer new form for `kube_node_status_capacity_pods` metric [#2269](https://github.com/prometheus-operator/kube-prometheus/pull/2269)

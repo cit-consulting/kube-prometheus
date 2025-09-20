@@ -7,6 +7,7 @@ local defaults = {
   commonLabels:: {
     'app.kubernetes.io/name': 'kube-prometheus',
     'app.kubernetes.io/part-of': 'kube-prometheus',
+    'app.kubernetes.io/component': 'kubernetes',
   },
   mixin:: {
     ruleLabels: {},
@@ -205,6 +206,8 @@ function(params) {
               sourceLabels: ['__metrics_path__'],
               targetLabel: 'metrics_path',
             },
+          ],
+          metricRelabelings: [
             {
               sourceLabels: ['__name__'],
               regex: 'process_start_time_seconds',
@@ -321,7 +324,12 @@ function(params) {
             },
             {
               sourceLabels: ['__name__', 'le'],
-              regex: 'apiserver_request_duration_seconds_bucket;(0.15|0.25|0.3|0.35|0.4|0.45|0.6|0.7|0.8|0.9|1.25|1.5|1.75|2.5|3|3.5|4.5|6|7|8|9|15|25|30|50)',
+              regex: '(apiserver_request|apiserver_request_sli|etcd_request)_duration_seconds_bucket;(0.15|0.25|0.3|0.35|0.4|0.45|0.6|0.7|0.8|0.9|1.25|1.5|1.75|2.5|3|3.5|4.5|6|7|8|9|15|25|30|50)',
+              action: 'drop',
+            },
+            {
+              sourceLabels: ['__name__', 'le'],
+              regex: 'apiserver_request_body_size_bytes_bucket;(150000|350000|550000|650000|850000|950000|(1\\.15|1\\.35|1\\.55|1\\.65|1\\.85|1\\.95|2\\.15|2\\.35|2\\.55|2\\.65|2\\.85|2\\.95)e\\+06)',
               action: 'drop',
             },
           ],
