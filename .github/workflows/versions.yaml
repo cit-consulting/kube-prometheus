@@ -11,16 +11,16 @@ jobs:
       matrix:
         branch:
           # testing will be done against last two release branches and main branch
-          - "release-0.14"
           - "release-0.15"
+          - "release-0.16"
           - "main"
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           ref: ${{ matrix.branch }}
       - name: Import environment variables from file
         run: cat ".github/env" >> "$GITHUB_ENV"
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v6
         with:
           go-version: ${{ env.golang-version }}
       - name: Upgrade versions
@@ -58,13 +58,13 @@ jobs:
           make update
           make generate
 
-          # Reset jsonnetfile.lock.json if no dependencies were updated
-          changedFiles=$(git diff --name-only | grep -vc 'jsonnetfile.lock.json')
-          if [[ "$changedFiles" -eq 0 ]]; then
+          # Reset jsonnetfile.lock.json if no dependencies were updated.
+          # grep returns 0 when it matches at least 1 line in the diff output.
+          if ! git diff --name-only | grep -qv 'jsonnetfile.lock.json'; then
             git checkout -- jsonnetfile.lock.json;
           fi
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           commit-message: "[bot] [${{ matrix.branch }}] Automated version update"
           title: "[bot] [${{ matrix.branch }}] Automated version update"

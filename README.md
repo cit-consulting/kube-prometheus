@@ -2,7 +2,6 @@
 
 [![Build Status](https://github.com/prometheus-operator/kube-prometheus/workflows/ci/badge.svg)](https://github.com/prometheus-operator/kube-prometheus/actions)
 [![Slack](https://img.shields.io/badge/join%20slack-%23prometheus--operator-brightgreen.svg)](http://slack.k8s.io/)
-[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/prometheus-operator/kube-prometheus)
 
 > [!WARNING]
 > Everything is experimental and may change significantly at any time.
@@ -45,12 +44,12 @@ The following Kubernetes versions are supported and work as we test against thes
 > [!NOTE]
 > In CI we will be testing only last two releases and main branch on a regular basis.
 
-| kube-prometheus stack                                                                      | Kubernetes 1.29 | Kubernetes 1.30 | Kubernetes 1.31 | Kubernetes 1.32 | Kubernetes 1.33 | Kubernetes 1.34 |
-|--------------------------------------------------------------------------------------------|-----------------|-----------------|-----------------|-----------------|-----------------|-----------------|
-| [`release-0.14`](https://github.com/prometheus-operator/kube-prometheus/tree/release-0.14) | ✔               | ✔               | ✔               | x               | x               | x               |
-| [`release-0.15`](https://github.com/prometheus-operator/kube-prometheus/tree/release-0.15) | x               | x               | ✔               | ✔               | ✔               | x               |
-| [`release-0.16`](https://github.com/prometheus-operator/kube-prometheus/tree/release-0.16) | x               | x               | ✔               | ✔               | ✔               | ✔               |
-| [`main`](https://github.com/prometheus-operator/kube-prometheus/tree/main)                 | x               | x               | x               | ✔               | ✔               | ✔               |
+| kube-prometheus stack                                                                      | Kubernetes 1.31 | Kubernetes 1.32 | Kubernetes 1.33 | Kubernetes 1.34 | Kubernetes 1.35 |
+|--------------------------------------------------------------------------------------------|-----------------|-----------------|-----------------|-----------------|-----------------|
+| [`release-0.15`](https://github.com/prometheus-operator/kube-prometheus/tree/release-0.15) | ✔               | ✔               | ✔               | x               | x               |
+| [`release-0.16`](https://github.com/prometheus-operator/kube-prometheus/tree/release-0.16) | x               | ✔               | ✔               | ✔               | x               |
+| [`release-0.17`](https://github.com/prometheus-operator/kube-prometheus/tree/release-0.17) | x               | x               | ✔               | ✔               | ✔               |
+| [`main`](https://github.com/prometheus-operator/kube-prometheus/tree/main)                 | x               | x               | ✔               | ✔               | ✔               |
 
 ## Quickstart
 

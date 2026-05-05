@@ -12,12 +12,12 @@ jobs:
           - ubuntu-latest
     name: Generate
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
       - name: Import environment variables from file
         run: cat ".github/env" >> "$GITHUB_ENV"
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v6
         with:
           go-version: ${{ env.golang-version }}
       - run: make --always-make generate validate && git diff --exit-code
@@ -25,12 +25,12 @@ jobs:
     runs-on: ubuntu-latest
     name: Check Documentation formatting and links
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
       - name: Import environment variables from file
         run: cat ".github/env" >> "$GITHUB_ENV"
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v6
         with:
           go-version: ${{ env.golang-version }}
       - run: make check-docs
@@ -38,12 +38,12 @@ jobs:
     runs-on: ubuntu-latest
     name: Jsonnet linter
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
       - name: Import environment variables from file
         run: cat ".github/env" >> "$GITHUB_ENV"
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v6
         with:
           go-version: ${{ env.golang-version }}
       - run: make --always-make lint
@@ -51,12 +51,12 @@ jobs:
     runs-on: ubuntu-latest
     name: Jsonnet formatter
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
       - name: Import environment variables from file
         run: cat ".github/env" >> "$GITHUB_ENV"
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v6
         with:
           go-version: ${{ env.golang-version }}
       - run: make --always-make fmt && git diff --exit-code
@@ -64,12 +64,12 @@ jobs:
     runs-on: ubuntu-latest
     name: Unit tests
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
       - name: Import environment variables from file
         run: cat ".github/env" >> "$GITHUB_ENV"
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v6
         with:
           go-version: ${{ env.golang-version }}
       - run: make --always-make test
@@ -77,7 +77,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Run security analysis on manifests
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
       - run: make --always-make kubescape
@@ -87,20 +87,20 @@ jobs:
     strategy:
       matrix:
         kind-image:
-          - "kindest/node:v1.34.0"
-          - "kindest/node:v1.33.4"
-          - "kindest/node:v1.32.8"
+          - "kindest/node:v1.35.1"
+          - "kindest/node:v1.34.3"
+          - "kindest/node:v1.33.7"
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
       - name: Import environment variables from file
         run: cat ".github/env" >> "$GITHUB_ENV"
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v6
         with:
           go-version: ${{ env.golang-version }}
       - name: Start kind cluster
-        uses: helm/kind-action@v1.12.0
+        uses: helm/kind-action@v1.14.0
         with:
           version: ${{ env.kind-version }}
           node_image: ${{ matrix.kind-image }}
@@ -110,6 +110,10 @@ jobs:
       - name: Install kube-router for NetworkPolicy support
         run: |
           kubectl apply -f tests/e2e/kind/kube-router.yaml
+      - name: Install kube-scheduler and kube-controller-manager services
+        run: |
+          kubectl apply -f tests/e2e/kind/kubernetesControlPlane-kubeControllerManagerPrometheusDiscoveryService.yaml && \
+          kubectl apply -f tests/e2e/kind/kubernetesControlPlane-kubeSchedulerPrometheusDiscoveryService.yaml
       - name: Wait for cluster to finish bootstraping
         run: kubectl wait --for=condition=Ready pods --all --all-namespaces --timeout=300s
       - name: Create kube-prometheus stack
@@ -117,6 +121,10 @@ jobs:
           kubectl create -f manifests/setup
           until kubectl get servicemonitors --all-namespaces ; do date; sleep 1; echo ""; done
           kubectl create -f manifests/
+      - name: Wait for kube-prometheus stack to finish bootstraping
+        run: kubectl wait --for=condition=Ready pods --all -n monitoring --timeout=300s
+      - name: Check resources in all namespaces
+        run: kubectl get services,endpoints,pods,prometheus,alertmanager --all-namespaces
       - name: Run tests
         run: |
           export KUBECONFIG="${HOME}/.kube/config"
